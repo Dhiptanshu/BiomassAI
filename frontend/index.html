@@ -1,0 +1,97 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <meta name="theme-color" content="#0f172a" />
+  <title>Biomass Verification</title>
+  <link rel="manifest" href="/manifest.json">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="{% static 'styles.css' %}" />
+</head>
+
+<body data-theme="dark">
+
+  <header>
+    <h1>BiomassAI</h1>
+    <button id="themeToggle" class="btn-secondary"
+      style="padding: 0.5rem; border-radius: 50%; width: 40px; height: 40px;">
+      ☀️
+    </button>
+  </header>
+
+  <main>
+    <div class="card">
+      <form id="uploadForm">
+
+        <div class="tab-buttons">
+          <button type="button" id="useFileBtn" class="active">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M20 6h-8l-2-2H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V8c0-1.1-.9-2-2-2zm0 12H4V8h16v10z" />
+            </svg>
+            Upload
+          </button>
+          <button type="button" id="useCameraBtn">
+            <svg viewBox="0 0 24 24">
+              <path
+                d="M9.66 6.99l1.69 1.69h6.15v8.73H6.5v-8.3h3.16M12 9c1.65 0 3 1.35 3 3s-1.35 3-3 3-3-1.35-3-3 1.35-3 3-3m0-2c-2.76 0-5 2.24-5 5s2.24 5 5 5 5-2.24 5-5-2.24-5-5-5m-1.99-4.71L8.33 4.5H5.01c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2v-12c0-1.1-.9-2-2-2h-3.32l-1.68-2.21z" />
+            </svg>
+            Camera
+          </button>
+        </div>
+
+        <!-- File Section -->
+        <div id="fileSection">
+          <label class="upload-area" id="dropZone">
+            <input type="file" id="imageInput" accept="image/*" />
+            <div class="upload-label">
+              <svg class="upload-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4M17 8l-5-5-5 5M12 3v12" />
+              </svg>
+              <span>Tap to select image</span>
+            </div>
+          </label>
+        </div>
+
+        <!-- Camera Section -->
+        <div id="cameraSection" style="display: none;">
+          <div id="cameraContainer"
+            style="position: relative; border-radius: 16px; overflow: hidden; background: #000;">
+            <video id="cameraPreview" autoplay playsinline
+              style="width: 100%; aspect-ratio: 3/4; object-fit: cover;"></video>
+            <canvas id="cameraCanvas" style="display: none;"></canvas>
+
+            <div style="position: absolute; bottom: 20px; width: 100%; display: flex; justify-content: center;">
+              <button type="button" id="captureBtn" class="camera-btn" aria-label="Capture"></button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Preview Container (Shared) -->
+        <div id="previewContainer">
+          <img id="finalImage" />
+          <button type="button" id="retakeBtn" class="btn btn-secondary"
+            style="width: 100%; border-radius: 0; padding: 1rem;">
+            🔄 Retake / Re-upload
+          </button>
+        </div>
+
+        <button type="submit" id="verifyBtn" class="btn btn-primary" style="margin-top: 1.5rem;">
+          Verify Integrity
+        </button>
+
+      </form>
+
+      <div id="result"></div>
+    </div>
+  </main>
+
+  <script src="{% static 'script.js' %}"></script>
+</body>
+
+</html>
