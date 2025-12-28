@@ -42,12 +42,16 @@ Ensure you have Python 3.8 or higher and pip installed on your system.
     #### Using Ngrok
     1.  Download and install ngrok from [ngrok.com](https://ngrok.com).
     2.  Open a terminal/command prompt.
-    3.  Run the following command:
+    3.  *(Optional)* If ngrok is not in your PATH, navigate to the folder where you unzipped it:
+        ```bash
+        cd C:\path\to\ngrok
+        ```
+    4.  Run the following command:
         ```bash
         ngrok http 8000
         ```
-    4.  Copy the `https` URL provided in the output (e.g., `https://random-name.ngrok-free.app`).
-    5.  Open this URL on your mobile device to access the app with camera permissions enabled.
+    5.  Copy the `https` URL provided in the output (e.g., `https://random-name.ngrok-free.app`).
+    6.  Open this URL on your mobile device to access the app with camera permissions enabled.
 
 ## Key Features
 *   **Automated Verification**: Uses MobileNetV2 to automatically detect tree and biomass presence in uploaded images.
