@@ -1,4 +1,4 @@
-const CACHE_NAME = "biomass-pwa-v2";
+const CACHE_NAME = "biomass-pwa-v3";
 const ASSETS = [
     "/",
     "/static/styles.css",

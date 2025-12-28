@@ -19,12 +19,11 @@ class UploadView(APIView):
         lat = float(request.data["latitude"])
         lon = float(request.data["longitude"])
 
-        # 1. GENERATE HASH & CHECK DUPLICATE
+        # Generate image hash
         import imagehash
         from PIL import Image as PilImage
         
         # We need to maintain the stream position for various reads
-        # But 'image' is an InMemoryUploadedFile, so we can use it directly with PIL
         try:
             with PilImage.open(image) as pil_img:
                 image_hash = str(imagehash.phash(pil_img))
@@ -40,18 +39,18 @@ class UploadView(APIView):
             image_hash=image_hash,
             status="PENDING"
         )
-
-        # 2. EXIF GPS (if exists)
+        
+        # Extract GPS from EXIF
         exif_gps = extract_gps(image)
 
-        # 3. GEO VALIDATION
+        # Validate location
         source = request.data.get('source')
         
         if source == 'camera':
             # Trust browser location for live camera
             geo_ok = True
         else:
-            # STRICT RULE: File uploads MUST have EXIF GPS
+            # File uploads must have EXIF GPS
             if not exif_gps:
                 geo_ok = False
             else:
@@ -62,7 +61,7 @@ class UploadView(APIView):
                     exif_gps
                 )
 
-        # 4. TREE DETECTION
+        # Detect biomass
         tree_ok, confidence = detect_tree(image)
 
         status = "APPROVED" if geo_ok and tree_ok and not duplicate else "REJECTED"

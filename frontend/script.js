@@ -29,11 +29,14 @@ let stream = null;
 let mode = "file"; // 'file' or 'camera'
 let capturedBlob = null;
 
-// Theme Toggle
+// Theme Toggle SVG icons
+const sunIcon = `<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>`;
+const moonIcon = `<svg viewBox="0 0 24 24" width="20" height="20" stroke="currentColor" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>`;
+
 themeToggle.onclick = () => {
   const isDark = document.body.dataset.theme === "dark";
   document.body.dataset.theme = isDark ? "light" : "dark";
-  themeToggle.textContent = isDark ? "🌙" : "☀️";
+  themeToggle.innerHTML = isDark ? moonIcon : sunIcon;
 };
 
 // Mode Switching
@@ -47,7 +50,7 @@ function switchMode(newMode) {
     fileSection.style.display = "block";
     cameraSection.style.display = "none";
     stopCamera();
-    // Verify visibility based on if we have a file selected
+
     if (imageInput.files.length > 0) {
       previewContainer.style.display = "block";
       fileSection.style.display = "none";
@@ -61,7 +64,6 @@ function switchMode(newMode) {
     fileSection.style.display = "none";
     cameraSection.style.display = "block";
 
-    // If we already have a captured image, show it instead of camera
     if (capturedBlob) {
       cameraSection.style.display = "none";
       previewContainer.style.display = "block";
@@ -121,7 +123,6 @@ imageInput.onchange = (e) => {
       finalImage.src = ev.target.result;
       previewContainer.style.display = "block";
       fileSection.style.display = "none";
-      // Clear captured blob if any to avoid confusion
       capturedBlob = null;
     };
     reader.readAsDataURL(file);
@@ -134,7 +135,7 @@ retakeBtn.onclick = () => {
   resultBox.style.display = "none";
 
   if (mode === "file") {
-    imageInput.value = ""; // Clear input
+    imageInput.value = "";
     fileSection.style.display = "block";
   } else {
     capturedBlob = null;
@@ -164,7 +165,6 @@ form.onsubmit = async (e) => {
   resultBox.style.display = "none";
 
   try {
-    // 1. Get Image
     let imageToSend;
     if (mode === "file") {
       if (!imageInput.files[0]) throw new Error("No image selected");
@@ -174,14 +174,7 @@ form.onsubmit = async (e) => {
       imageToSend = capturedBlob;
     }
 
-    // 2. Get Location
-    // Note: In real world, might want to parallelize this with user interaction if possible
-    // but for now we wait.
-    const pos = await getPosition().catch(() => ({ coords: { latitude: 0, longitude: 0 } })); // Fallback for demo? Or strict?
-    // STRICT RULE: If we fail to get browser location, we should probably still send 0,0 
-    // but backend might reject if it cross-references.
-    // However, backend chiefly checks EXIF for file uploads.
-    // For camera uploads, we trust browser location.
+    const pos = await getPosition().catch(() => ({ coords: { latitude: 0, longitude: 0 } }));
 
     const formData = new FormData();
     formData.append("image", imageToSend, "upload.jpg");
@@ -202,18 +195,18 @@ form.onsubmit = async (e) => {
     resultBox.style.display = "block";
     resultBox.className = data.result.status === "APPROVED" ? "success" : "error";
 
-    const icon = data.result.status === "APPROVED" ? "✅" : "❌";
+    const statusText = data.result.status === "APPROVED" ? "APPROVED" : "REJECTED";
 
     resultBox.innerHTML = `
-      <div style="font-size: 1.1rem; font-weight: bold; margin-bottom: 10px;">
-        ${icon} ${data.result.status}
+      <div style="font-size: 1.1rem; font-weight: bold; margin-bottom: 10px; color: ${data.result.status === 'APPROVED' ? 'var(--success)' : 'var(--error)'}">
+        ${statusText}
       </div>
       <div>Confidence: ${(data.result.confidence * 100).toFixed(1)}%</div>
       <div>Bio-mass: ${data.result.tree_detected ? "Detected" : "Not Detected"}</div>
       <div>Location: ${data.result.geo_valid ? "Valid" : "Invalid"}</div>
       <div>Unique: ${!data.result.duplicate ? "Yes" : "Duplicate"}</div>
       <div style="margin-top: 10px; font-size: 0.8rem; opacity: 0.7; word-break: break-all;">
-        Hashes: ${data.hash ? data.hash.substring(0, 8) + "..." : "N/A"}
+        Hash: ${data.hash ? data.hash.substring(0, 8) + "..." : "N/A"}
       </div>
     `;
 

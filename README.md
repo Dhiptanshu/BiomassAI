@@ -37,7 +37,17 @@ Ensure you have Python 3.8 or higher and pip installed on your system.
 
 4.  **Access the App**
     *   **Local**: Open a web browser and navigate to `http://localhost:8000`.
-    *   **Mobile / Remote**: Use a tunneling service like `ngrok` to expose port 8000 via HTTPS (e.g., `ngrok http 8000`). This is required for camera access on mobile devices.
+    *   **Mobile / Remote**: Use a tunneling service like `ngrok` to expose port 8000 via HTTPS.
+
+    #### Using Ngrok
+    1.  Download and install ngrok from [ngrok.com](https://ngrok.com).
+    2.  Open a terminal/command prompt.
+    3.  Run the following command:
+        ```bash
+        ngrok http 8000
+        ```
+    4.  Copy the `https` URL provided in the output (e.g., `https://random-name.ngrok-free.app`).
+    5.  Open this URL on your mobile device to access the app with camera permissions enabled.
 
 ## Key Features
 *   **Automated Verification**: Uses MobileNetV2 to automatically detect tree and biomass presence in uploaded images.
